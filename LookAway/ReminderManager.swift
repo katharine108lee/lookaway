@@ -4,9 +4,9 @@ import SwiftUI
 
 enum ReminderType: String, CaseIterable, Identifiable {
     case eyes = "Look away"
-    case stretch = "Stretch"
-    case stand = "Stand"
-    case posture = "Sit up straight"
+//    case stretch = "Stretch"
+//    case stand = "Stand"
+//    case posture = "Sit up straight"
 
     var id: String { rawValue }
 
@@ -14,12 +14,12 @@ enum ReminderType: String, CaseIterable, Identifiable {
         switch self {
         case .eyes:
             return 20
-        case .stretch:
-            return 45
-        case .stand:
-            return 60
-        case .posture:
-            return 30
+//        case .stretch:
+//            return 45
+//        case .stand:
+//            return 60
+//        case .posture:
+//            return 30
         }
     }
 
@@ -27,12 +27,12 @@ enum ReminderType: String, CaseIterable, Identifiable {
         switch self {
         case .eyes:
             return "Eye Break"
-        case .stretch:
-            return "Time to stretch"
-        case .stand:
-            return "Time to stand"
-        case .posture:
-            return "Sit up straight"
+//        case .stretch:
+//            return "Time to stretch"
+//        case .stand:
+//            return "Time to stand"
+//        case .posture:
+//            return "Sit up straight"
         }
     }
 
@@ -40,12 +40,12 @@ enum ReminderType: String, CaseIterable, Identifiable {
         switch self {
         case .eyes:
             return "Look 20 feet away for 20 seconds while blinking slowly."
-        case .stretch:
-            return "Roll your shoulders, stretch your neck, and reset."
-        case .stand:
-            return "Stand up and give your body a break."
-        case .posture:
-            return "Relax your shoulders, lengthen your spine, and reset your posture."
+//        case .stretch:
+//            return "Roll your shoulders, stretch your neck, and reset."
+//        case .stand:
+//            return "Stand up and give your body a break."
+//        case .posture:
+//            return "Relax your shoulders, lengthen your spine, and reset your posture."
         }
     }
 }
@@ -103,25 +103,22 @@ final class SystemNotificationSender: NSObject, NotificationSending, UNUserNotif
         return [.banner, .list, .sound]
     }
 }
-@MainActor
+
+@MainActor // Runs on main UI thread
 final class ReminderManager: ObservableObject {
     
-    // MARK: - Saved settings
-    
     @AppStorage("eyesEnabled") var eyesEnabled: Bool = true
-    
-    // Deactivated for now.
-    @AppStorage("stretchEnabled") var stretchEnabled: Bool = false
-    @AppStorage("standEnabled") var standEnabled: Bool = false
-    @AppStorage("postureEnabled") var postureEnabled: Bool = false
-
     @AppStorage("eyesInterval") var eyesInterval: Int = ReminderType.eyes.defaultIntervalMinutes
     
     // Deactivated for now.
-    @AppStorage("stretchInterval") var stretchInterval: Int = ReminderType.stretch.defaultIntervalMinutes
-    @AppStorage("standInterval") var standInterval: Int = ReminderType.stand.defaultIntervalMinutes
-    @AppStorage("postureInterval") var postureInterval: Int = ReminderType.posture.defaultIntervalMinutes
+//    @AppStorage("stretchEnabled") var stretchEnabled: Bool = false
+//    @AppStorage("standEnabled") var standEnabled: Bool = false
+//    @AppStorage("postureEnabled") var postureEnabled: Bool = false
+//    @AppStorage("stretchInterval") var stretchInterval: Int = ReminderType.stretch.defaultIntervalMinutes
+//    @AppStorage("standInterval") var standInterval: Int = ReminderType.stand.defaultIntervalMinutes
+//    @AppStorage("postureInterval") var postureInterval: Int = ReminderType.posture.defaultIntervalMinutes
 
+    
     @AppStorage("reminderDisplayMode") private var reminderDisplayModeRawValue: String = ReminderDisplayMode.notification.rawValue
     
     @AppStorage("breakDurationSeconds") var breakDurationSeconds: Int = 20
@@ -139,7 +136,7 @@ final class ReminderManager: ObservableObject {
     
     @Published var nextReminderText: String = "Starting..."
     @Published var timeRemainingText: String = ""
-    @Published var isPaused: Bool = false
+    @Published var isPaused: Bool = false //@published means when this value changes, tell SwiftUI so the interface can update.
 
     // MARK: - Private state
     
@@ -173,8 +170,6 @@ final class ReminderManager: ObservableObject {
 
         updateStatusText()
     }
-
-    // MARK: - Timer control
 
     func startAllTimers() {
         stopAllReminderTimers()
@@ -262,6 +257,7 @@ final class ReminderManager: ObservableObject {
         updateStatusText()
     }
 
+    // MARK: - Show reminder
     private func showReminder(for type: ReminderType) {
         switch reminderDisplayMode {
         case .notification:
@@ -331,12 +327,12 @@ final class ReminderManager: ObservableObject {
         switch type {
         case .eyes:
             eyesInterval = ReminderType.eyes.defaultIntervalMinutes
-        case .stretch:
-            stretchInterval = ReminderType.stretch.defaultIntervalMinutes
-        case .stand:
-            standInterval = ReminderType.stand.defaultIntervalMinutes
-        case .posture:
-            postureInterval = ReminderType.posture.defaultIntervalMinutes
+//        case .stretch:
+//            stretchInterval = ReminderType.stretch.defaultIntervalMinutes
+//        case .stand:
+//            standInterval = ReminderType.stand.defaultIntervalMinutes
+//        case .posture:
+//            postureInterval = ReminderType.posture.defaultIntervalMinutes
         }
 
         restartTimersAfterSettingsChange()
